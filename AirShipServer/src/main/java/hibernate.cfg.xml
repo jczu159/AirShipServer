@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+		"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+		"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory>
+
+<!-- 數據庫基本資料 -->
+		<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+		<property name="connection.url">jdbc:mysql://45.32.49.87:3306/luckairship?useSSL=false&amp;serverTimezone=UTC&amp;characterEncoding=UTF-8</property>
+
+		<property name="connection.username">root</property>
+		<property name="connection.password">36f57bc6fd</property>
+
+
+		<property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+		<!-- //hibernate 獲取mysql方言 告訴hibernate 用的是哪一種 -->
+
+		<property name="current_session_context_class">thread</property>
+		<property name="show_sql">true</property>
+		<property name="format_sql">true</property>
+		<property name="hbm2ddl.auto">update</property>
+
+		<property name="hibernate.jdbc.batch_size">500</property>
+		<mapping class="com.airship.server.pojo.BetOrderPojo"></mapping>
+		<!-- 配置 hibernate 的基本属性 -->
+		<!-- 1. 数据源需配置到 IOC 容器中, 所以在此处不再需要配置数据源 -->
+		<!-- 2. 关联的 .hbm.xml 也在 IOC 容器配置 SessionFactory 实例时在进行配置 -->
+		<!-- 3. 配置 hibernate 的基本属性: 方言, SQL 显示及格式化, 生成数据表的策略以及二级缓存等. -->
+
+
+
+		<!-- 配置 hibernate 二级缓存相关的属性. -->
+	</session-factory>
+</hibernate-configuration>

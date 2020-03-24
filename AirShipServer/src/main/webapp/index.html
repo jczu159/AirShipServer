@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="BIG5">
+<title>Insert title here</title>
+</head>
+<script type="text/javascript" language="javascript">
+<!--
+	function GetLocalIPAddress() {
+		var obj = null;
+		var rslt = "";
+		try {
+			obj = new ActiveXObject("rcbdyctl.Setting");
+			rslt = obj.GetIPAddress;
+			obj = null;
+		} catch (e) {
+			//異常發生
+		}
+		return rslt;
+	}
+	function getMac() {
+		var locator = new ActiveXObject("WbemScripting.SWbemLocator");
+		var service = locator.ConnectServer(".");
+		var properties = service
+				.ExecQuery("Select * from Win32_NetworkAdapterConfiguration Where IPEnabled =True");
+		var e = new Enumerator(properties);
+		{
+			var p = e.item();
+			var mac = p.MACAddress;
+			return mac
+		}
+	}
+	//-->
+	function init() {
+		var ip = GetLocalIPAddress();
+		var mac = getMac();
+		fm.clientIP.value = ip;
+		fm.clientMAC.value = mac;
+	}
+</script>
+
+
+<body onload="init();">
+	<form name='fm'>
+		通過JavaScript獲取的IP資訊：<input type='text' name='clientIP'><br>
+		通過JavaScript獲取的MAC資訊：<input type='text' name='clientMAC'>
+		通過JSP獲取的IP資訊：<%=request.getRemoteAddr()%>
+	</form>
+
+</body>
+
+
+</html>
