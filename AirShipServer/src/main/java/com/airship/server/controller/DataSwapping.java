@@ -20,11 +20,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.airship.server.bo.HibernateSessionFactory;
 import com.airship.server.pojo.BetOrderPojo;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
 
 /**
  * 
@@ -80,8 +76,45 @@ public class DataSwapping {
 		return respStr;
 	}
 
-	public static String getRunVersion(@RequestParam(value = "version", required = true) String account) {
+	@RequestMapping(value = "/getRunVersion", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+	@ResponseBody
+	public static String getRunVersion(@RequestParam(value = "version", required = true) String version) {
+		String respStr = "";
+		Session hibernatesession = HibernateSessionFactory.getSession();
+		Transaction transaction = hibernatesession.beginTransaction();
 
-		return null;
+		List<BetOrderPojo> betoder = new ArrayList<BetOrderPojo>();
+		try {
+
+			System.out.println("in controller" + version);
+			HttpServletRequest req = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+					.getRequest();
+			// 取得連線者的ip
+			String remoteAddr = req.getRemoteAddr();
+			logger.debug("-------------------------------");
+			logger.debug("此次客戶連線ip :" + remoteAddr + " 此次客戶連線版本號碼:  " + remoteAddr);
+			logger.debug("-------------------------------");
+			
+			String sql = "SELECT * FROM bet_system_config WHERE KEY_NAME = 'VersionNumber' ";
+			SQLQuery query = hibernatesession.createSQLQuery(sql);
+			List<Object[]> list = query.list();
+			if (list.isEmpty()) {
+				logger.error("查詢不到版本號碼");
+				throw new Exception("您帳號目前尚無法使用，請洽詢管理員");
+			}
+			betoder = query.list();
+			
+			
+			respStr = new Gson().toJson(betoder);
+			logger.debug("取得到的JSON結果 : " + respStr);
+
+		} catch (Exception e) {
+			respStr = e.toString();
+			logger.error("程式發生錯誤:" + e);
+		} finally {
+			transaction.commit();
+			hibernatesession.close();
+		}
+		return respStr;
 	}
 }
